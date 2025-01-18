@@ -1,17 +1,66 @@
-// Get all mp4 files in directory (to determine later)
+const fs = require("fs");
+const path = require("path");
 
-// For each mp4 file, find its corresponding json file
+const directory = path.join(
+  "/Users/logan/Library/CloudStorage/OneDrive-Personal/craft-cuttery tiktoks copy"
+);
 
-// In the json file, find the "url" field
+const folders = fs.readdirSync(directory);
 
-// Parse the url to get the creator name
+for (const folder of folders) {
+  try {
+    const folderPath = path.join(directory, folder);
 
-// See if the creator name folder exists (in separate directory to determine later)
+    // Check if the path is a directory before proceeding
+    if (!fs.statSync(folderPath).isDirectory()) {
+      console.log(`Skipping non-directory item: ${folder}`);
+      continue;
+    }
 
-// If it doesn't, create it
+    const files = fs.readdirSync(folderPath);
+    // Get all mp4 files in folder
+    const mp4Files = files.filter((file) => file.endsWith(".mp4"));
 
-// Move the mp4 file into the creator name folder
+    if (mp4Files.length === 0) {
+      console.log(`No MP4 files found in: ${folder}`);
+      continue;
+    }
 
-// Delete the json file
+    console.log(`Processing ${mp4Files.length} MP4 files in: ${folder}`);
 
-// Repeat for all mp4 files
+    // For each mp4 file, find its corresponding json file
+    for (const mp4File of mp4Files) {
+      const mp4FilePath = path.join(folderPath, mp4File);
+      const jsonFilePath = path.join(
+        folderPath,
+        mp4File.replace(".mp4", ".json")
+      );
+      console.log(jsonFilePath);
+
+      // In the json file, find the "url" field
+      const jsonContent = fs.readFileSync(jsonFilePath, "utf8");
+      const json = JSON.parse(jsonContent);
+      const url = json.url;
+      console.log(url);
+
+      // Parse the url to get the creator name (eg "url":"https:\/\/www.tiktok.com\/@vt\/video\/6945136942505839877" -> "vt")
+      const creatorName = url.split("/")[3].split("@")[1];
+      console.log(creatorName);
+
+      // See if the creator name folder exists in subfolder
+      const creatorNameFolderPath = path.join(folderPath, creatorName);
+      if (!fs.existsSync(creatorNameFolderPath)) {
+        fs.mkdirSync(creatorNameFolderPath);
+      }
+
+      // Move the mp4 file into the creator name folder
+      fs.renameSync(mp4FilePath, path.join(creatorNameFolderPath, mp4File));
+
+      // Delete the json file
+      fs.unlinkSync(jsonFilePath);
+    }
+  } catch (error) {
+    console.error(`Error processing folder "${folder}":`, error.message);
+    continue;
+  }
+}
