@@ -1,9 +1,8 @@
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config();
 
-const directory = path.join(
-  "/Users/logan/Library/CloudStorage/OneDrive-Personal/craft-cuttery tiktoks copy"
-);
+const directory = path.join(process.env.path_local);
 
 const folders = fs.readdirSync(directory);
 
@@ -40,10 +39,10 @@ for (const folder of folders) {
       // In the json file, find the "url" field
       const jsonContent = fs.readFileSync(jsonFilePath, "utf8");
       const json = JSON.parse(jsonContent);
-      const url = json.url;
+      const url = json.url || json.webpage_url;
       console.log(url);
 
-      // Parse the url to get the creator name (eg "url":"https:\/\/www.tiktok.com\/@vt\/video\/6945136942505839877" -> "vt")
+      // Parse the url to get the creator name
       const creatorName = url.split("/")[3].split("@")[1];
       console.log(creatorName);
 
