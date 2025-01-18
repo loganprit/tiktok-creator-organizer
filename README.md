@@ -2,11 +2,11 @@
 
 ## Description
 
-A Node.js script (Yes I know) that organizes downloaded TikTok videos by creator name using JSON metadata. Originally created to organize TikTok content exported via Downie before the TikTok ban, this tool helps users sort their video collections by creator, making it easier to find and follow content creators on other platforms.
+A Node.js script (Yes I know) that organizes downloaded TikTok videos by creator name using JSON metadata. Originally created to organize TikTok content exported via Downie before the TikTok ban, this tool helps users sort their video collections by creator, making it easier to find and follow content creators on other platforms. This specific branch allows for the use of `description.js` to fetch and update video descriptions on macOS.
 
 ## Prerequisites
 
-- Node.js (version X.X.X or higher)
+- Node.js (version 14.0.0 or higher)
 - npm (usually comes with Node.js)
 - Downie (what I used) or yt-dlp (cross-platform)
 
@@ -60,13 +60,14 @@ A Node.js script (Yes I know) that organizes downloaded TikTok videos by creator
 
 ## How It Works
 
-1. The script scans the specified directory for video collections
+1. The script scans the specified directory for video collections.
 2. For each MP4 file found:
-   - Locates corresponding JSON metadata file
-   - Extracts creator name from metadata
-   - Creates creator-specific folder
-   - Moves video to appropriate folder
-   - Cleans up JSON metadata file
+   - Locates the corresponding JSON metadata file.
+   - Uses `description.js` to fetch and update the video description.
+   - Extracts the creator name from the metadata.
+   - Creates a creator-specific folder.
+   - Moves the video to the appropriate folder.
+   - Cleans up the JSON metadata file.
 
 ## Error Handling
 
